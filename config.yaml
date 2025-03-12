@@ -1,0 +1,66 @@
+model_list:
+  # OpenAI
+  - model_name: gpt-4
+    litellm_params:
+      model: gpt-4
+      api_key: ${OPENAI_API_KEY}
+
+  - model_name: gpt-3.5-turbo
+    litellm_params:
+      model: gpt-3.5-turbo
+      api_key: ${OPENAI_API_KEY}
+
+  # Anthropic
+  - model_name: claude-3-opus
+    litellm_params:
+      model: claude-3-opus-20240229
+      api_key: ${ANTHROPIC_API_KEY}
+
+  - model_name: claude-3-sonnet
+    litellm_params:
+      model: claude-3-5-sonnet-20240620
+      api_key: ${ANTHROPIC_API_KEY}
+
+  # Google
+  - model_name: gemini-pro
+    litellm_params:
+      model: gemini/gemini-1.5-flash
+      api_key: ${GEMINI_API_KEY}
+
+  # Grok (xAI)
+  - model_name: grok
+    litellm_params:
+      model: xai/grok-3-large
+      api_key: ${GROK_API_KEY}
+
+  # Deepseek
+  - model_name: deepseek-chat
+    litellm_params:
+      model: deepseek/deepseek-chat
+      api_key: ${DEEPSEEK_API_KEY}
+
+general_settings:
+  master_key: "metatron123"
+  database_url: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
+
+environment_variables:
+  OPENAI_API_KEY: ""
+  ANTHROPIC_API_KEY: ""
+  GEMINI_API_KEY: ""
+  GROK_API_KEY: ""
+  DEEPSEEK_API_KEY: ""
+
+litellm_settings:
+  verbose: True
+  cache: False
+  callbacks: []
+  request_timeout: 600
+  drop_params: True
+
+router_settings:
+  num_retries: 3
+  routing_strategy: "simple-shuffle"
+
+spend_limits:
+  global_spend_limit: 100
+  currency: "USD"

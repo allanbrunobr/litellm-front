@@ -1,0 +1,4 @@
+# Configuração proxy para LiteLLM
+general_settings:
+  # Configurações gerais do proxy
+  port: 4000

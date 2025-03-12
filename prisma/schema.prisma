@@ -1,0 +1,50 @@
+// Este é um schema.prisma básico para SQLite
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Definição das tabelas principais
+model LiteLLM_Keys {
+  id        String    @id @default(uuid())
+  key       String    @unique
+  user_id   String?
+  team_id   String?
+  models    String?
+  max_budget Float?
+  spend     Float     @default(0)
+  metadata  String?  // Armazenado como JSON
+  created_at DateTime @default(now())
+  expires   DateTime?
+  deleted   Boolean   @default(false)
+}
+
+model LiteLLM_VerificationToken {
+  id         String   @id @default(uuid())
+  token      String   @unique
+  expires    DateTime
+  user_id    String?
+  team_id    String?
+  models     String?  // Armazenado como JSON
+  metadata   String?  // Armazenado como JSON
+  created_at DateTime @default(now())
+}
+
+model LiteLLM_SpendLogs {
+  id            String   @id @default(uuid())
+  key           String
+  spend         Float
+  model         String
+  request_id    String?
+  response_id   String?
+  user_id       String?
+  team_id       String?
+  token_usage   String?  // Armazenado como JSON
+  created_at    DateTime @default(now())
+}

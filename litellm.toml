@@ -1,0 +1,14 @@
+# Configuração do LiteLLM Proxy
+
+[general]
+master_key = "metatron123"
+database_url = "sqlite:///app/data/litellm_keys.db"
+port = 4000
+host = "0.0.0.0"
+environment = "production"
+
+[ui]
+enable = true
+
+[ollama]
+url = ""
