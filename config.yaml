@@ -40,8 +40,8 @@ model_list:
       api_key: ${DEEPSEEK_API_KEY}
 
 general_settings:
-  master_key: "metatron123"
-  database_url: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
+  master_key: ${LITELLM_MASTER_KEY}
+  database_url: ${DATABASE_URL}
 
 environment_variables:
   OPENAI_API_KEY: ""

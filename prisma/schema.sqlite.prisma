@@ -1,0 +1,68 @@
+// Schema para SQLite otimizado para o Cloud Run
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Definição das tabelas principais
+model LiteLLM_Keys {
+  id        String    @id @default(uuid())
+  key       String    @unique
+  key_name  String?
+  key_alias String?
+  user_id   String?
+  team_id   String?
+  models    String?
+  max_budget Float?
+  spend     Float     @default(0)
+  metadata  String?  // Armazenado como JSON
+  created_at DateTime @default(now())
+  expires   DateTime?
+  deleted   Boolean   @default(false)
+  spend_logs LiteLLM_SpendLogs[]
+
+  @@index([user_id])
+  @@index([team_id])
+  @@index([deleted])
+}
+
+model LiteLLM_VerificationToken {
+  id         String   @id @default(uuid())
+  token      String   @unique
+  expires    DateTime
+  user_id    String?
+  team_id    String?
+  models     String?  // Armazenado como JSON
+  metadata   String?  // Armazenado como JSON
+  created_at DateTime @default(now())
+  
+  @@index([user_id])
+  @@index([team_id])
+}
+
+model LiteLLM_SpendLogs {
+  id            String   @id @default(uuid())
+  key           String
+  key_id        String?
+  spend         Float
+  model         String
+  request_id    String?
+  response_id   String?
+  user_id       String?
+  team_id       String?
+  token_usage   String?  // Armazenado como JSON
+  created_at    DateTime @default(now())
+  litellm_key   LiteLLM_Keys? @relation(fields: [key_id], references: [id])
+  
+  @@index([key])
+  @@index([user_id])
+  @@index([team_id])
+  @@index([model])
+  @@index([created_at])
+}

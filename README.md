@@ -12,10 +12,24 @@ A graphical user interface for managing API keys for the LiteLLM proxy. This too
 
 ## Prerequisites
 
-- Docker and Docker Compose
 - Python 3.8 or higher
-- Tkinter (usually comes with Python)
 - API keys for the LLM providers you want to use
+
+## Arquitetura
+
+Este projeto utiliza uma arquitetura cliente-servidor:
+
+- **Servidor (LiteLLM Proxy)**:
+
+  - Hospedado em: `https://litellm-server-458225897211.us-central1.run.app`
+  - Gerencia todas as chaves API e solicitações de LLM
+  - Utiliza SQLite como banco de dados para armazenar as chaves e registros de uso
+  - Requer a master key "metatron123" para autenticação
+
+- **Cliente (Web Manager)**:
+  - Interface web que roda localmente na porta 5001
+  - Comunica-se com o servidor via API REST
+  - Não requer banco de dados local (todos os dados são armazenados no servidor)
 
 ## Setup Instructions
 
@@ -26,48 +40,39 @@ git clone https://github.com/yourusername/litellm-key-manager.git
 cd litellm-key-manager
 ```
 
-2. **Set up environment variables**
+2. **Set up environment variables (optional)**
 
 ```bash
 cp .env.example .env
 ```
 
-Edit the `.env` file and add your API keys for the LLM providers you want to use:
+Edit the `.env` file and add your preferred master key for accessing the LiteLLM proxy.
 
-- OpenAI
-- Anthropic
-- Grok
-- Gemini
-- Deepseek
-
-Also set your preferred master key for the LiteLLM proxy.
-
-3. **Start the LiteLLM proxy and PostgreSQL database**
+3. **Run the Web Manager application**
 
 ```bash
-docker-compose up -d
+./run.sh
 ```
 
-This will start two containers:
+This will:
 
-- LiteLLM proxy on port 8080
-- PostgreSQL database on port 5432
-
-4. **Run the Key Manager application**
-
-```bash
-python key_manager.py
-```
+- Create a virtual environment
+- Install required dependencies
+- Start the web interface on http://localhost:5001
 
 ## Usage
 
-### Connection Tab
+### Web Interface
 
-1. The default server URL is `http://localhost:8080`
-2. Enter the master key you set in the `.env` file
+Access the web interface at http://localhost:5001 in your browser.
+
+### Connection
+
+1. The server URL is already configured to connect to `https://litellm-server-458225897211.us-central1.run.app`
+2. Enter the master key provided by your administrator
 3. Click "Test Connection" to verify that you can connect to the LiteLLM proxy
 
-### Manage Keys Tab
+### Manage Keys
 
 1. Enter a name for the key
 2. Optionally set a team ID
@@ -76,40 +81,43 @@ python key_manager.py
 5. Select which models the key can access
 6. Click "Create Key" to generate a new API key
 
-### List Keys Tab
+### List Keys
 
 1. Click "Update Key List" to see all existing keys
 2. Select a key and click "Revoke Selected Key" to delete it
 
-## Configuration
+## Available Models
 
-You can modify the `config.yaml` file to change the LiteLLM proxy configuration:
+The following models are configured on the server:
 
-- Add or remove models
-- Change routing strategies
-- Adjust timeout settings
-- Set global spend limits
+- **OpenAI**
+
+  - gpt-4
+  - gpt-3.5-turbo
+
+- **Anthropic**
+
+  - claude-3-opus
+  - claude-3-sonnet
+
+- **Google**
+
+  - gemini-pro
+
+- **Grok (xAI)**
+
+  - grok
+
+- **Deepseek**
+  - deepseek-chat
+
+For more details about the model configurations, see the `models_config.yaml` file.
 
 ## Troubleshooting
 
-- If you can't connect to the LiteLLM proxy, make sure the containers are running:
+- If you can't connect to the LiteLLM proxy, make sure you have the correct master key and that the server is online.
 
-  ```bash
-  docker-compose ps
-  ```
-
-- If you need to see the logs from the LiteLLM proxy:
-
-  ```bash
-  docker-compose logs litellm
-  ```
-
-- If you need to reset the database:
-  ```bash
-  docker-compose down
-  rm -rf data/postgres
-  docker-compose up -d
-  ```
+- If you need to use a different LiteLLM server, you can modify the `LITELLM_HOST` variable in the `.env` file or in the `run.sh` script.
 
 ## License
 

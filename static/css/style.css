@@ -1,0 +1,283 @@
+/* LiteLLM Manager Styles */
+
+/* Custom card borders */
+.border-left-primary {
+  border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+  border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+  border-left: 0.25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+  border-left: 0.25rem solid #f6c23e !important;
+}
+
+.border-left-danger {
+  border-left: 0.25rem solid #e74a3b !important;
+}
+
+/* Card and chart styling */
+.chart-area {
+  position: relative;
+  height: 20rem;
+  width: 100%;
+}
+
+.chart-area canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Font weights */
+.font-weight-bold {
+  font-weight: 700 !important;
+}
+
+/* Text colors */
+.text-primary {
+  color: #4e73df !important;
+}
+
+.text-success {
+  color: #1cc88a !important;
+}
+
+.text-info {
+  color: #36b9cc !important;
+}
+
+.text-warning {
+  color: #f6c23e !important;
+}
+
+.text-danger {
+  color: #e74a3b !important;
+}
+
+.text-gray-800 {
+  color: #5a5c69 !important;
+}
+
+.text-gray-300 {
+  color: #dddfeb !important;
+}
+
+/* Custom styling for the model selection in key creation */
+.model-selection {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid #d1d3e2;
+  border-radius: 0.35rem;
+}
+
+/* Code block styling */
+.code-block {
+  font-family: monospace;
+  font-size: 0.9rem;
+  border-radius: 0.35rem;
+}
+
+/* Card shadow styling */
+.shadow {
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+/* Disable negative spending values */
+input[type="number"].no-negative::-webkit-inner-spin-button,
+input[type="number"].no-negative::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+input[type="number"].no-negative {
+  -moz-appearance: textfield;
+}
+
+/* Responsive table adjustments */
+@media (max-width: 767.98px) {
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+}
+
+/* Arquivo CSS base */
+
+/* Estilos gerais */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Estilos para modais */
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Estilos para tabelas */
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+
+/* Estilo para cards */
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Estilos para seleção de modelos */
+.model-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #e9ecef;
+}
+
+.model-selection .form-check {
+  width: calc(33.333% - 10px);
+  margin-bottom: 5px;
+}
+
+/* Estilos para chaves geradas */
+.key-result {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  font-family: monospace;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* Estilos para chaves na lista */
+.key-card {
+  transition: all 0.2s ease;
+}
+
+.key-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para notificações */
+#notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.notification {
+  margin-bottom: 10px;
+  min-width: 250px;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Estilos para o loading overlay */
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Estilos para o dashboard */
+.stats-card {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.stats-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #4e73df;
+}
+
+.stats-card .stats-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #6c757d;
+}
+
+.stats-card .stats-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #343a40;
+}
+
+/* Estilos para a página de configurações */
+.settings-section {
+  margin-bottom: 30px;
+}
+
+.settings-section h2 {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Estilos para mobile */
+@media (max-width: 768px) {
+  .model-selection .form-check {
+    width: 100%;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+}

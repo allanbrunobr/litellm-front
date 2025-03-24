@@ -12,7 +12,7 @@ class LiteLLMKeyManager:
         self.root.resizable(True, True)
         
         # Variáveis
-        self.server_url = tk.StringVar(value="http://localhost:8080")
+        self.server_url = tk.StringVar(value="https://litellm-server-458225897211.us-central1.run.app")
         self.master_key = tk.StringVar()
         self.key_name = tk.StringVar()
         self.team_id = tk.StringVar()

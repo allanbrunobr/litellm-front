@@ -1,0 +1,226 @@
+{% extends 'base.html' %} {% block title %}Settings - LiteLLM Manager{% endblock
+%} {% block content %}
+<h1 class="h3 mb-4"><i class="fas fa-cogs"></i> Settings</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- LiteLLM Server Configuration -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">LiteLLM Server Configuration</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="server-url" class="form-label">Server URL</label>
+                    <input type="text" class="form-control" id="server-url" value="{{ config.litellm_host }}">
+                    <div class="form-text">The URL of your LiteLLM proxy server</div>
+                </div>
+                <div class="mb-3">
+                    <label for="master-key" class="form-label">Master Key</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="master-key" 
+                               value="{{ config.master_key if config.master_key else '' }}"
+                               data-original-value="{{ config.master_key if config.master_key else '' }}"
+                               data-masked="true"
+                               style="font-family: monospace;" readonly>
+                        <button class="btn btn-outline-secondary" type="button" 
+                                disabled title="Por razões de segurança, a Master Key não pode ser visualizada">
+                            <i class="fas fa-lock"></i>
+                        </button>
+                    </div>
+                    <div class="form-text">The master key used to authenticate with the LiteLLM server</div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-primary" id="test-connection-btn">
+                        <i class="fas fa-plug"></i> Test Connection
+                    </button>
+                    <button type="button" class="btn btn-success" id="save-settings-btn">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+                
+                <div class="mt-3">
+                    <div class="alert {{ 'alert-success' if litellm_status else 'alert-danger' }} d-flex align-items-center" role="alert">
+                        <div>
+                            <i class="fas {{ 'fa-check-circle' if litellm_status else 'fa-exclamation-triangle' }} me-2"></i>
+                            <span>
+                                {% if litellm_status %}
+                                    LiteLLM Server is online and responding
+                                {% else %}
+                                    LiteLLM Server is offline or not responding
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <!-- General Application Settings -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Application Settings</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="app-environment" class="form-label">Environment</label>
+                    <select class="form-select" id="app-environment" disabled>
+                        <option value="development" {% if config.environment == 'development' %}selected{% endif %}>Development</option>
+                        <option value="production" {% if config.environment == 'production' %}selected{% endif %}>Production</option>
+                    </select>
+                    <div class="form-text">Current application environment (edit in .env file)</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Application Version</label>
+                    <input type="text" class="form-control" value="1.0.0" disabled>
+                    <div class="form-text">Current version of the LiteLLM Manager</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Instructions Card -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Getting Started</h6>
+    </div>
+    <div class="card-body">
+        <h5>Setting up the LiteLLM Proxy Server</h5>
+        <ol>
+            <li>Clone the LiteLLM repository: <code>git clone https://github.com/BerriAI/litellm.git</code></li>
+            <li>Navigate to the repository: <code>cd litellm</code></li>
+            <li>Create a <code>config.yaml</code> file with your API keys and configuration</li>
+            <li>Start the proxy server: <code>python -m litellm.proxy.proxy_server --config /path/to/config.yaml --port 8000 --api_key your_master_key</code></li>
+        </ol>
+        
+        <h5>Connecting to the LiteLLM Server</h5>
+        <ol>
+            <li>Enter the URL of your proxy server (typically <code>http://localhost:8000</code> for local deployments)</li>
+            <li>Enter the master key you defined when starting the server</li>
+            <li>Click "Test Connection" to verify your settings</li>
+            <li>Save your settings to use them throughout the application</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Função para mascarar valor da chave
+    function maskKey(value) {
+        if (!value) return "";
+        const firstChars = value.substring(0, 3);
+        const lastChars = value.substring(value.length - 3);
+        const middleLength = value.length - 6;
+        const middleMask = middleLength > 0 ? "•".repeat(middleLength) : "";
+        return firstChars + middleMask + lastChars;
+    }
+    
+    // Inicializar o mascaramento da chave mestra
+    document.addEventListener('DOMContentLoaded', function() {
+        const masterKeyInput = document.getElementById('master-key');
+        if (masterKeyInput && masterKeyInput.value) {
+            const originalValue = masterKeyInput.value;
+            masterKeyInput.dataset.originalValue = originalValue;
+            masterKeyInput.value = maskKey(originalValue);
+        }
+    });
+    
+    // Save settings
+    document.getElementById('save-settings-btn').addEventListener('click', function() {
+        const serverUrl = document.getElementById('server-url').value;
+        const masterKeyInput = document.getElementById('master-key');
+        // Usar o valor original da chave do dataset, não o valor mascarado exibido
+        const masterKey = masterKeyInput.dataset.originalValue;
+        
+        // Se o usuário inseriu um valor totalmente novo (caso raro, já que o campo é readonly)
+        // verificamos se o valor não contém caracteres de máscara
+        const newKey = !masterKey || masterKey !== masterKeyInput.value && !masterKeyInput.value.includes('•') 
+            ? masterKeyInput.value 
+            : masterKey;
+        
+        if (!serverUrl) {
+            showNotification('error', 'Please enter a server URL');
+            return;
+        }
+        
+        // Mostrar estado de carregamento
+        showLoadingState('Salvando configurações...');
+        
+        // Enviar para a API
+        fetch('/api/settings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                server_url: serverUrl,
+                master_key: newKey
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            hideLoadingState();
+            
+            if (data.success) {
+                showNotification('success', 'Configurações salvas com sucesso!');
+                
+                // Atualizar o valor original armazenado
+                masterKeyInput.dataset.originalValue = newKey;
+                // Atualizar a máscara para o novo valor
+                masterKeyInput.value = maskKey(newKey);
+                
+                // Testar a conexão com os novos valores
+                testLiteLLMConnection(serverUrl, newKey);
+            } else {
+                showNotification('error', `Erro ao salvar configurações: ${data.error || 'Erro desconhecido'}`);
+            }
+        })
+        .catch(error => {
+            hideLoadingState();
+            showNotification('error', `Erro ao salvar configurações: ${error.message}`);
+        });
+    });
+    
+    // Verificar status do servidor ao carregar a página
+    document.addEventListener('DOMContentLoaded', function() {
+        const serverUrl = document.getElementById('server-url').value;
+        const masterKeyInput = document.getElementById('master-key');
+        // Usar o valor original da chave, não o valor mascarado
+        const masterKey = masterKeyInput.dataset.originalValue;
+        
+        // Usar a mesma função que o botão Test Connection utiliza
+        if (serverUrl) {
+            // Mostrar um indicador de carregamento sutil
+            const statusAlert = document.querySelector('.alert[role="alert"]');
+            if (statusAlert) {
+                statusAlert.innerHTML = '<div><i class="fas fa-spinner fa-spin me-2"></i><span>Verificando status do servidor...</span></div>';
+            }
+            
+            // Chamar a API de teste de conexão para uma verificação mais precisa
+            fetch('/api/test_connection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    server_url: serverUrl,
+                    master_key: masterKey
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateServerStatus(data.success === true);
+            })
+            .catch(error => {
+                console.error('Erro ao verificar status do servidor:', error);
+                updateServerStatus(false);
+            });
+        }
+    });
+</script>
+{% endblock %}
